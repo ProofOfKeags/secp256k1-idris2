@@ -16,14 +16,20 @@ Ctx = Ptr LCtx
 Scratch : Type
 Scratch = Ptr LScratch
 
-Pubkey : Type
-Pubkey = AnyPtr
+Pubkey64 : Type
+Pubkey64 = AnyPtr
 
-Seckey : Type
-Seckey = AnyPtr
+Seckey32 : Type
+Seckey32 = AnyPtr
 
-Signature : Type
-Signature = AnyPtr
+Signature64 : Type
+Signature64 = AnyPtr
+
+Message32 : Type
+Message32 = AnyPtr
+
+Tweak32 : Type
+Tweak32 = AnyPtr
 
 NonceFn : Type
 NonceFn = AnyPtr -> AnyPtr -> AnyPtr -> AnyPtr -> AnyPtr -> Bits32 -> PrimIO Int
@@ -50,58 +56,58 @@ prim__scratchSpaceCreate : Ctx -> Bits16 -> PrimIO Scratch
 prim__scratchSpaceDestroy : Ctx -> Scratch -> PrimIO ()
 
 %foreign cBind "secp256k1_ec_pubkey_parse"
-prim__ecPubkeyParse : Ctx -> Pubkey -> AnyPtr -> Bits16 -> PrimIO ()
+prim__ecPubkeyParse : Ctx -> Pubkey64 -> AnyPtr -> Bits16 -> PrimIO ()
 
 %foreign cBind "secp256k1_ec_pubkey_serialize"
-prim__ecPubkeySerialize : Ctx -> AnyPtr -> Ptr Bits16 -> Pubkey -> Bits32 -> PrimIO Int
+prim__ecPubkeySerialize : Ctx -> AnyPtr -> Ptr Bits16 -> Pubkey64 -> Bits32 -> PrimIO Int
 
 %foreign cBind "secp256k1_ecdsa_signature_parse_compact"
-prim__ecdsaSignatureParseCompact : Ctx -> Signature -> AnyPtr -> PrimIO Int
+prim__ecdsaSignatureParseCompact : Ctx -> Signature64 -> AnyPtr -> PrimIO Int
 
 %foreign cBind "secp256k1_ecdsa_signature_parse_der"
-prim__ecdsaSignatureParseDer : Ctx -> Signature -> AnyPtr -> Bits16 -> PrimIO Int
+prim__ecdsaSignatureParseDer : Ctx -> Signature64 -> AnyPtr -> Bits16 -> PrimIO Int
 
 %foreign cBind "secp256k1_ecdsa_signature_serialize_der"
-prim__ecdsaSignatureSerializeDer : Ctx -> AnyPtr -> Ptr Bits16 -> Signature -> PrimIO Int
+prim__ecdsaSignatureSerializeDer : Ctx -> AnyPtr -> Ptr Bits16 -> Signature64 -> PrimIO Int
 
 %foreign cBind "secp256k1_ecdsa_signature_serialize_compact"
-prim__ecdsaSignatureSerializeCompact : Ctx -> AnyPtr -> Signature -> PrimIO Int
+prim__ecdsaSignatureSerializeCompact : Ctx -> AnyPtr -> Signature64 -> PrimIO Int
 
 %foreign cBind "secp256k1_ecdsa_verify"
-prim__ecdsaVerify : Ctx -> Signature -> AnyPtr -> Pubkey -> PrimIO Int
+prim__ecdsaVerify : Ctx -> Signature64 -> Message32 -> Pubkey64 -> PrimIO Int
 
 %foreign cBind "secp256k1_ecdsa_signature_normalize"
-prim__ecdsaSignatureNormalize : Ctx -> Signature -> Signature -> PrimIO Int
+prim__ecdsaSignatureNormalize : Ctx -> Signature64 -> Signature64 -> PrimIO Int
 
 %foreign cBind "secp256k1_ecdsa_sign"
-prim__ecdsaSign : Ctx -> Signature -> AnyPtr -> Seckey -> NonceFn -> AnyPtr -> PrimIO Int
+prim__ecdsaSign : Ctx -> Signature64 -> Message32 -> Seckey32 -> NonceFn -> AnyPtr -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_seckey_verify"
-prim__ecSeckeyVerify : Ctx -> Seckey -> PrimIO Int
+prim__ecSeckeyVerify : Ctx -> Seckey32 -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_pubkey_create"
-prim__ecPubkeyCreate : Ctx -> Pubkey -> Seckey -> PrimIO Int
+prim__ecPubkeyCreate : Ctx -> Pubkey64 -> Seckey32 -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_seckey_negate"
-prim__ecSeckeyNegate : Ctx -> Seckey -> PrimIO Int
+prim__ecSeckeyNegate : Ctx -> Seckey32 -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_pubkey_negate"
-prim__ecPubkeyNegate : Ctx -> Pubkey -> PrimIO Int
+prim__ecPubkeyNegate : Ctx -> Pubkey64 -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_seckey_tweak_add"
-prim__ecSeckeyTweakAdd : Ctx -> Seckey -> AnyPtr -> PrimIO Int
+prim__ecSeckeyTweakAdd : Ctx -> Seckey32 -> Tweak32 -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_pubkey_tweak_add"
-prim__ecPubkeyTweakAdd : Ctx -> Pubkey -> AnyPtr -> PrimIO Int
+prim__ecPubkeyTweakAdd : Ctx -> Pubkey64 -> Tweak32 -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_seckey_tweak_mul"
-prim__ecSeckeyTweakMul : Ctx -> Seckey -> Anyptr -> PrimIO Int
+prim__ecSeckeyTweakMul : Ctx -> Seckey32 -> Tweak32 -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_pubkey_tweak_mul"
-prim__ecPubkeyTweakMul : Ctx -> Pubkey -> Anyptr -> PrimIO Int
+prim__ecPubkeyTweakMul : Ctx -> Pubkey64 -> Tweak32 -> PrimIO Int
 
 %foreign cBind "secp256k1_context_randomize"
 prim__contextRandomize : Ctx -> AnyPtr -> PrimIO Int
 
 %foreign cBind "secp256k1_ec_pubkey_combine"
-prim__ecPubkeyCombine : Ctx -> Pubkey -> AnyPtr -> Bits16 -> PrimIO Int
+prim__ecPubkeyCombine : Ctx -> Pubkey64 -> AnyPtr -> Bits16 -> PrimIO Int
